@@ -7,12 +7,14 @@ from sqlalchemy import (
     String,
     Boolean,
     DateTime,
-    Enum as SQLEnum
+    Enum as SQLEnum,
+    ForeignKey
 )
 
 from sqlalchemy.orm import (
     Mapped,
-    mapped_column
+    mapped_column,
+    relationship
 )
 
 from app.core.database import Base
@@ -63,9 +65,14 @@ class User(Base):
         nullable=False
     )
 
-    image: Mapped[str | None] = mapped_column(
-        String(500),
-        nullable=True
+    image_id: Mapped[str | None] = mapped_column(
+            ForeignKey("media.id"),
+            nullable=True
+    )
+    
+    image = relationship(
+        "Media",
+        foreign_keys=[image_id]
     )
 
     role: Mapped[UserRole] = mapped_column(
