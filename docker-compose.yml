@@ -1,0 +1,15 @@
+services:
+  fastapi:
+    build: .
+    container_name: ecommerce-api
+
+    ports:
+      - "5000:5000"
+
+    env_file:
+      - .env
+
+    volumes:
+      - .:/app
+
+    restart: unless-stopped
