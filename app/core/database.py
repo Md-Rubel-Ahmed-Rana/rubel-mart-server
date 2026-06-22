@@ -24,7 +24,6 @@ SessionLocal = sessionmaker(
 
 
 def connect_database():
-
     try:
 
         with engine.connect() as connection:
@@ -37,3 +36,13 @@ def connect_database():
         print("❌ PostgreSQL Connection Failed")
 
         raise error
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()

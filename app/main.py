@@ -1,53 +1,49 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-from app.core.database import connect_database
 from app.api.router import api_router
 from app.core.config import settings
-from app.middleware.logging import LoggingMiddleware
+from app.core.lifespan import lifespan
+from app.utils.system import (
+    get_uptime,
+    get_timestamp
+)
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
+from app.middleware.cors import (
+    setup_cors
+)
 
-    connect_database()
-    print("🚀 Application Started")
-
-    yield
-
-    print("👋 Application Shutdown")
+from app.exceptions import (
+    register_exception_handlers
+)
 
 
 app = FastAPI(
-    title="Rubel Mart API",
-    version="1.0.0",
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
     lifespan=lifespan
 )
 
-app.add_middleware(LoggingMiddleware)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        settings.FRONTEND_URL
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+setup_cors(app)
 
-
-
+register_exception_handlers(app)
 
 
 
 @app.get("/")
 async def root():
     return {
-        "message": "FastAPI server is up and running...", 
+        "message": "Rubel Mart's server is up and running...", 
         "success": True, 
         "status_code": 200,
-        "data": {}
+        "data": {
+            "uptime": (
+                f"{get_uptime()} seconds"
+            ),
+            "timestamp": (
+                get_timestamp()
+            )
+        }
     }
 
 @app.get("/health")
@@ -56,12 +52,15 @@ async def health():
         "message": "Healthy",
         "success": True,
         "status_code": 200,
-        "data": {}
+        "data": {
+            "uptime": (
+                f"{get_uptime()} seconds"
+            ),
+            "timestamp": (
+                get_timestamp()
+            )
+        }
     }
 
 
 app.include_router(api_router)
-
-
-
- 

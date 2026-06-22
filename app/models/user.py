@@ -1,5 +1,7 @@
 from datetime import datetime
 from enum import Enum
+import uuid
+
 
 from sqlalchemy import (
     String,
@@ -29,10 +31,12 @@ class UserStatus(str, Enum):
 
 class User(Base):
     __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(
-        primary_key=True,
-        index=True
+    
+    id: Mapped[str] = mapped_column(
+    String(32),
+    primary_key=True,
+    default=lambda: uuid.uuid4().hex,
+    index=True
     )
 
     first_name: Mapped[str] = mapped_column(

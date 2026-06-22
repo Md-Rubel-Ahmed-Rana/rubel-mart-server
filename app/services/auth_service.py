@@ -1,5 +1,8 @@
-from app.repositories.auth_repository import AuthRepository
+from app.repositories.user_repository import UserRepository
 from app.utils.response import success_response
+from sqlalchemy.orm import Session
+from app.utils.password import hash_password
+from app.exceptions.api_exception import ApiException
 
 
 class AuthService:
@@ -7,7 +10,7 @@ class AuthService:
     @staticmethod
     async def get_profile():
 
-        user = await AuthRepository.get_profile()
+        user = await UserRepository.get_profile()
 
         return success_response(
             message="Profile retrieved successfully",
@@ -15,21 +18,43 @@ class AuthService:
         )      
     
     @staticmethod
-    async def register():
+    def register(
+        db: Session,
+        payload
+    ):
 
-        user = await AuthRepository.create_user()
+        existing_user = (
+            UserRepository.find_by_email(
+                db,
+                payload.email
+            )
+        )
 
-        return {
-            "message": "User registered successfully",
-            "success": True,
-            "status_code": 201,
-            "data": user
+        if existing_user:
+
+            raise ApiException(
+                message="Account already exists with this email. Please login or create another account.",
+                status_code=409
+            )
+        
+        user_data = {
+            "first_name": payload.first_name,
+            "last_name": payload.last_name,
+            "email": payload.email,
+            "password": hash_password(
+                payload.password
+            )
         }
+
+        return UserRepository.create_user(
+            db,
+            user_data
+        )
 
     @staticmethod
     async def login():
 
-        user = await AuthRepository.get_user_by_email()
+        user = await UserRepository.get_user_by_email()
 
         return {
             "message": "Login successful",
