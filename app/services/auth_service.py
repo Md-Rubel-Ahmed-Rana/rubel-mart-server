@@ -11,6 +11,10 @@ from app.utils.password import (
     hash_password
 )
 
+from app.services.media_service import (
+    MediaService
+)
+
 
 class AuthService:
 
@@ -187,5 +191,39 @@ class AuthService:
         )
 
         return updated_user
+    
+    @staticmethod
+    async def update_profile_image(
+        db,
+        user_id: str,
+        file
+    ):
+
+        user = UserRepository.find_by_id(
+            db,
+            user_id
+        )
+
+        if not user:
+
+            raise ApiException(
+                message="User not found",
+                status_code=404
+            )
+
+        media = await MediaService.upload_file(
+            db=db,
+            file=file,
+            uploaded_by=user.id,
+            folder="users"
+        )
+
+        user = UserRepository.update_image(
+            db,
+            user,
+            media.id
+        )
+
+        return user
 
 

@@ -25,9 +25,13 @@ class Media(Base):
 
     url: Mapped[str]
 
+    provider: Mapped[str | None]
+
     original_name: Mapped[str]
 
     mime_type: Mapped[str]
+
+    uploaded_by: Mapped[str | None]
 
     size: Mapped[int]
 

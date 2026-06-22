@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api.router import api_router
 from app.core.config import settings
 from app.core.lifespan import lifespan
+from app.core import cloudinary
 from app.utils.system import (
     get_uptime,
     get_timestamp

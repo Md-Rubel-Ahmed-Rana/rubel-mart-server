@@ -2,7 +2,9 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
-    Response
+    Response,
+    UploadFile,
+    File
 )
 from app.utils.response import (
     success_response
@@ -38,6 +40,35 @@ async def profile(
     )
 
     return  result
+
+@router.patch("/image")
+async def update_profile_image(
+    file: UploadFile = File(...),
+    db: Session = Depends(
+        get_db
+    ),
+    current_user=Depends(
+        get_current_user
+    )
+):
+    
+    user = await AuthService.update_profile_image(
+        db=db,
+        user_id=current_user["id"],
+        file=file
+    )
+
+    return success_response(
+        message="Profile image updated successfully",
+        data={
+            "id": user.id,
+            "image": (
+                user.image.url
+                if user.image
+                else None
+            )
+        }
+    )
 
 @router.patch("/")
 async def update_profile(
