@@ -6,16 +6,15 @@ from app.utils.system import (
     get_uptime,
     get_timestamp
 )
-
-
+from app.middleware.token_rotation import (
+    TokenRotationMiddleware
+)
 from app.middleware.cors import (
     setup_cors
 )
-
 from app.exceptions import (
     register_exception_handlers
 )
-
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -25,8 +24,10 @@ app = FastAPI(
 
 
 setup_cors(app)
-
 register_exception_handlers(app)
+app.add_middleware(
+    TokenRotationMiddleware
+)
 
 
 

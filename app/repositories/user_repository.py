@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from app.exceptions.api_exception import ApiException
 from app.models.user import User
 
 
@@ -11,11 +11,12 @@ class UserRepository:
         email: str
     ):
 
-        return (
+        user =  (
             db.query(User)
             .filter(User.email == email)
             .first()
         )
+        return user
 
     @staticmethod
     def create_user(
@@ -31,4 +32,14 @@ class UserRepository:
 
         db.refresh(user)
 
+        return user
+    
+    @staticmethod
+    def find_by_id(db: Session, id: str):
+        
+        user = (
+           db.query(User).filter(User.id == id)
+           .first()
+        )
+        print("user from repo", user)
         return user
