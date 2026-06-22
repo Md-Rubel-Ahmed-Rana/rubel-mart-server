@@ -1,8 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-
-
 class Settings(BaseSettings):
     APP_NAME: str
     APP_VERSION: str
@@ -12,7 +9,7 @@ class Settings(BaseSettings):
     PORT: int
 
     FRONTEND_URL: str
-    SECRET_KEY: str
+    JWT_SECRET: str
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -21,8 +18,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-# config.py
-
-print("APP_NAME =", settings.APP_NAME)
-print("PORT =", settings.PORT)
