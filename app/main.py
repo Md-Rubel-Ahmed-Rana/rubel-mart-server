@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from contextlib import asynccontextmanager
+from app.core.database import connect_database
 from app.api.router import api_router
 from app.core.config import settings
 from app.middleware.logging import LoggingMiddleware
@@ -21,6 +22,23 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
+)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    connect_database()
+    print("🚀 Application Started")
+
+    yield
+
+    print("👋 Application Shutdown")
+
+
+app = FastAPI(
+    title="Rubel Mart API",
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 
