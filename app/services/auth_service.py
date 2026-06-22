@@ -33,7 +33,7 @@ class AuthService:
                 "last_name": user.last_name,
                 "email": user.email,
                 "phone": user.phone,
-                "image": user.image,
+                "image": user.image.url if user.image else None,
                 "role": user.role,
                 "status": user.status,
                 "is_verified": user.is_verified,
@@ -219,9 +219,9 @@ class AuthService:
         )
 
         user = UserRepository.update_image(
-            db,
-            user,
-            media.id
+            db=db,
+            user=user,
+            image_id=media.id
         )
 
         return user

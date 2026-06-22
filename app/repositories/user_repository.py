@@ -55,3 +55,17 @@ class UserRepository:
         db.refresh(user)
 
         return user
+    
+    @staticmethod
+    def update_image(
+        db: Session,
+        user: User,
+        image_id: str
+    ):
+        user.image_id = image_id
+
+        db.commit()
+
+        db.refresh(user)
+
+        return user

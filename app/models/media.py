@@ -8,6 +8,7 @@ from sqlalchemy.orm import (
 
 from sqlalchemy import (
     String,
+    DateTime
 )
 
 class Media(Base):
@@ -39,4 +40,13 @@ class Media(Base):
 
     height: Mapped[int | None]
 
-    created_at: Mapped[datetime]
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
