@@ -13,7 +13,8 @@ from app.schemas.auth_schema import (
     LoginSchema
 )
 from app.schemas.user_schema import (
-    RegisterSchema
+    RegisterSchema,
+    UpdateUserSchema
 )
 from app.services.auth_service import (
     AuthService
@@ -30,17 +31,45 @@ async def profile(
     current_user=Depends(
         get_current_user
     )
-):
-    
-    print("Auth user", current_user)
-    print("Auth user id", current_user["id"])
-    
+):  
     result = await AuthService.get_profile(
         db,
         current_user["id"]
     )
 
     return  result
+
+@router.patch("/")
+async def update_profile(
+    payload: UpdateUserSchema,
+    db: Session = Depends(get_db),
+    current_user=Depends(
+        get_current_user
+    )
+):
+    user = await AuthService.update_profile(
+        db,
+        current_user["id"],
+        payload
+    )
+
+    return {
+        "success": True,
+        "message": "Profile updated successfully",
+        "data": {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "phone": user.phone,
+                "image": user.image,
+                "role": user.role,
+                "status": user.status,
+                "is_verified": user.is_verified,
+                "created_at": user.created_at,
+                "updated_at": user.updated_at
+            }
+    }
  
 @router.post("/register")
 async def register(

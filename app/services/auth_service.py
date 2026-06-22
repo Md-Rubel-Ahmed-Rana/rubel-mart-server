@@ -1,12 +1,14 @@
 from app.repositories.user_repository import UserRepository
 from app.utils.response import success_response
 from sqlalchemy.orm import Session
-from app.utils.password import hash_password
 from app.exceptions.api_exception import ApiException
 from app.core.jwt import jwt_service
-
+from app.schemas.user_schema import  (
+    UpdateUserSchema
+)
 from app.utils.password import (
-    verify_password
+    verify_password,
+    hash_password
 )
 
 
@@ -137,23 +139,53 @@ class AuthService:
             "status_code": 200,
             "data": {}
         }
-
+    
     @staticmethod
-    async def refresh_token():
+    async def update_profile(
+        db: Session,
+        id: str,
+        payload: UpdateUserSchema
+    ):
+        user = UserRepository.find_by_id(
+            db,
+            id
+        )
 
-        return {
-            "message": "Token refreshed successfully",
-            "success": True,
-            "status_code": 200,
-            "data": {}
-        }
+        if not user:
+            raise ApiException(
+                "User not found",
+                404
+            )
 
-    @staticmethod
-    async def logout():
+        update_data = payload.model_dump(
+            exclude_unset=True
+        )
 
-        return {
-            "message": "Logout successful",
-            "success": True,
-            "status_code": 200,
-            "data": {}
-        }
+        if "password" in update_data and update_data["password"]:
+
+            is_same_password = verify_password(
+                update_data["password"],
+                user.password
+            )
+
+            if is_same_password:
+                raise ApiException(
+                    "Same password couldn't be changed. Please choose a different password",
+                    400
+                )
+
+            update_data["password"] = hash_password(
+                update_data["password"]
+            )
+
+        updated_user = (
+            UserRepository.update_by_id(
+                db,
+                user,
+                update_data
+            )
+        )
+
+        return updated_user
+
+

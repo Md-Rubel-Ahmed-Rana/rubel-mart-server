@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from app.exceptions.api_exception import ApiException
 from app.models.user import User
 
 
@@ -41,5 +40,18 @@ class UserRepository:
            db.query(User).filter(User.id == id)
            .first()
         )
-        print("user from repo", user)
+        return user
+    
+    @staticmethod
+    def update_by_id(
+        db: Session,
+        user: User,
+        payload: dict
+    ):
+        for key, value in payload.items():
+            setattr(user, key, value)
+
+        db.commit()
+        db.refresh(user)
+
         return user
