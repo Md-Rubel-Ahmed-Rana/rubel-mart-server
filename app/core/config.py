@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str
     CLOUDINARY_API_SECRET: str
 
+    RESEND_API_KEY: str
+    EMAIL_FROM: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore"

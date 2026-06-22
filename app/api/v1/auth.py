@@ -27,6 +27,39 @@ from app.dependencies.auth import (
 
 router = APIRouter()
 
+@router.post("/register")
+async def register(
+    payload: RegisterSchema,
+    db: Session = Depends(get_db)
+):
+
+    try:
+
+        user = await AuthService.register(
+            db,
+            payload
+        )
+
+        return {
+            "message": "User registered successfully",
+            "success": True,
+            "status_code": 201,
+            "data": {
+                "id": user.id,
+                "email": user.email
+            }
+        }
+
+    except ValueError as error:
+
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
+    
+
+
+
 @router.get("/")
 async def profile(
     db: Session = Depends(get_db),
@@ -102,37 +135,6 @@ async def update_profile(
             }
     }
  
-@router.post("/register")
-async def register(
-    payload: RegisterSchema,
-    db: Session = Depends(get_db)
-):
-
-    try:
-
-        user = AuthService.register(
-            db,
-            payload
-        )
-
-        return {
-            "message": "User registered successfully",
-            "success": True,
-            "status_code": 201,
-            "data": {
-                "id": user.id,
-                "email": user.email
-            }
-        }
-
-    except ValueError as error:
-
-        raise HTTPException(
-            status_code=400,
-            detail=str(error)
-        )
-    
-
 @router.post("/login")
 async def login(
     payload: LoginSchema,
