@@ -1,5 +1,5 @@
 import smtplib
-
+import socket
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from app.core.config import settings
@@ -26,6 +26,19 @@ class EmailService:
                 "html"
             )
         )
+
+        print("HOST:", settings.EMAIL_HOST)
+        print("PORT:", settings.EMAIL_PORT)
+
+        socket.create_connection(
+            (
+                settings.EMAIL_HOST,
+                int(settings.EMAIL_PORT)
+            ),
+            timeout=10
+        )
+
+        print("SMTP Reachable")
 
         with smtplib.SMTP(
             settings.EMAIL_HOST,
