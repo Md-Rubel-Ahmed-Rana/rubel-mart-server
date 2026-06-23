@@ -11,10 +11,6 @@ from app.utils.password import (
     hash_password
 )
 
-from app.services.email_service import (
-    EmailService
-)
-
 from app.services.media_service import (
     MediaService
 )
@@ -74,9 +70,6 @@ class AuthService:
                 payload.password
             )
         }
-
-        # send email
-        await EmailService.send_verification_email(payload.email, payload.first_name)
 
         return UserRepository.create_user(
             db,
