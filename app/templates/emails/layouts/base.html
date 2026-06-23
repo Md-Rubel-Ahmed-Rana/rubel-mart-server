@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{{ title }}</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f4f5fb;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .wrapper {
+        width: 100%;
+        background: #f4f5fb;
+        padding: 40px 15px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #7b00ff, #a855f7);
+        padding: 40px 30px;
+        text-align: center;
+      }
+
+      .logo {
+        width: 80px;
+        display: block;
+        margin: 0 auto 15px;
+      }
+
+      .brand-name {
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .slogan {
+        color: #f3e8ff;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      .content {
+        padding: 40px 35px;
+      }
+
+      .footer {
+        padding: 30px;
+        text-align: center;
+        background: #f9fafb;
+      }
+
+      .footer-title {
+        color: #111827;
+        font-weight: 600;
+      }
+
+      .footer-text {
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .copyright {
+        color: #9ca3af;
+        font-size: 13px;
+        margin-top: 15px;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .content {
+          padding: 30px 20px;
+        }
+
+        .brand-name {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="header">
+          <img src="{{ logo_url }}" alt="Rubel Mart" class="logo" />
+
+          <h1 class="brand-name">Rubel Mart</h1>
+
+          <p class="slogan">Smart Shopping for Modern Living</p>
+        </div>
+
+        <div class="content">{% block content %} {% endblock %}</div>
+
+        <div class="footer">
+          <p class="footer-title">Need Help?</p>
+
+          <p class="footer-text">{{ support_email }}</p>
+
+          <p class="copyright">© {{ year }} Rubel Mart. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

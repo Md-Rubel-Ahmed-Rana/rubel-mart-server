@@ -76,7 +76,7 @@ class AuthService:
         }
 
         # send email
-        await EmailService.send_verification_email(payload.email, payload.first_name, "https://mdrubelahmedrana.vercel.app")
+        await EmailService.send_verification_email(payload.email, payload.first_name)
 
         return UserRepository.create_user(
             db,

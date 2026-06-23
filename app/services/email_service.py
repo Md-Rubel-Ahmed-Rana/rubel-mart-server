@@ -1,11 +1,10 @@
-import resend
+import smtplib
+
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from app.core.config import settings
-from app.utils.template import (
-    render_template
-)
-
-resend.api_key = settings.RESEND_API_KEY
-
+from datetime import datetime 
+from app.services.template_service import ( TemplateService )
 
 class EmailService:
 
@@ -15,27 +14,52 @@ class EmailService:
         subject: str,
         html: str
     ):
+        message = MIMEMultipart()
 
-        resend.Emails.send(
-            {
-                "from": settings.EMAIL_FROM,
-                "to": [to],
-                "subject": subject,
-                "html": html
-            }
+        message["From"] = settings.EMAIL_FROM
+        message["To"] = to
+        message["Subject"] = subject
+
+        message.attach(
+            MIMEText(
+                html,
+                "html"
+            )
         )
+
+        with smtplib.SMTP(
+            settings.EMAIL_HOST,
+            settings.EMAIL_PORT
+        ) as server:
+
+            server.starttls()
+
+            server.login(
+                settings.EMAIL_USER,
+                settings.EMAIL_PASSWORD
+            )
+
+            server.send_message(
+                message
+            )
+
 
     @staticmethod
     async def send_verification_email(
         email: str,
         name: str,
-        verification_url: str
     ):
-
-        html = render_template(
-            "verify_email.html",
-            name=name,
-            verification_url=verification_url
+        
+        html = TemplateService.render( 
+            "emails/auth/verification.html", 
+            { 
+                "title": "Account Verification", 
+                "name": name, 
+                "otp": "123456", 
+                "year": datetime.now().year, 
+                "logo_url": "https://res.cloudinary.com/dv2ocmcyo/image/upload/v1782229601/rubel-mart-logo_ihlhjn.png", 
+                "support_email": "mdrubelahmedrana521@gmail.com", 
+            } 
         )
 
         await EmailService._send_email(

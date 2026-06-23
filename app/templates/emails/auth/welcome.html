@@ -1,0 +1,34 @@
+{% extends "emails/layouts/base.html" %} {% block content %}
+
+<h2>Welcome to Rubel Mart 🎉</h2>
+
+<p>Hello <strong>{{ name }}</strong>,</p>
+
+<p>
+  Your email has been successfully verified. Welcome to the Rubel Mart family.
+</p>
+
+<ul>
+  <li>🛍 Shop thousands of products</li>
+  <li>❤️ Save items to wishlist</li>
+  <li>📦 Track orders in real-time</li>
+  <li>🎁 Get exclusive offers</li>
+</ul>
+
+<a
+  href="{{ website_url }}"
+  style="
+    display: inline-block;
+    padding: 14px 30px;
+    background: #7b00ff;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 20px;
+  "
+>
+  Start Shopping
+</a>
+
+{% endblock %}
