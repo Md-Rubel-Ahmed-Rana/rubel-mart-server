@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     HOST: str
     PORT: int
 
-    FRONTEND_URL: str
+    FRONTEND_URL_DEV: str
+    FRONTEND_URL_LIVE: str
     JWT_SECRET: str
 
     DATABASE_URL: str
@@ -16,12 +17,6 @@ class Settings(BaseSettings):
     CLOUDINARY_CLOUD_NAME: str
     CLOUDINARY_API_KEY: str
     CLOUDINARY_API_SECRET: str
-
-    EMAIL_HOST: str
-    EMAIL_PORT: int
-    EMAIL_USER: str
-    EMAIL_PASSWORD: str
-    EMAIL_FROM: str
 
     model_config = SettingsConfigDict(
         env_file=".env",

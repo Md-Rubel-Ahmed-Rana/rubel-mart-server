@@ -10,7 +10,8 @@ def setup_cors(app):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
-            settings.FRONTEND_URL
+            settings.FRONTEND_URL_DEV,
+            settings.FRONTEND_URL_LIVE,
         ],
         allow_credentials=True,
         allow_methods=["*"],
