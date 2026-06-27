@@ -149,12 +149,13 @@ async def login(
     )
 
     response.set_cookie(
-        key="rubel_mart_access_token",
-        value=result["access_token"],
-        httponly=True,
-        secure=True,
-        samesite="none",
-        max_age=60 * 60 * 24  # 1 day
+    key="rubel_mart_access_token",
+    value=result["access_token"],
+    httponly=True,
+    secure=True,
+    samesite="none",
+    max_age=60 * 60 * 24,
+    path="/",
     )
 
     response.set_cookie(
@@ -163,7 +164,8 @@ async def login(
         httponly=True,
         secure=True,
         samesite="none",
-        max_age=60 * 60 * 24 * 7  # 7 days
+        max_age=60 * 60 * 24 * 7,
+        path="/",
     )
 
     return success_response(
