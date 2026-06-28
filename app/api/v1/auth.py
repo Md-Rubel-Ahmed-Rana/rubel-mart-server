@@ -6,6 +6,7 @@ from fastapi import (
     UploadFile,
     File
 )
+
 from app.utils.response import (
     success_response
 )
@@ -178,4 +179,30 @@ async def login(
                 "last_name": result["user"].last_name
             }
         }
+    )
+
+
+@router.delete("/logout")
+async def logout(
+    response: Response,
+    current_user=Depends(get_current_user)
+):
+    response.delete_cookie(
+        key="rubel_mart_access_token",
+        path="/",
+        secure=True,
+        samesite="none",
+        httponly=True,
+    )
+
+    response.delete_cookie(
+        key="rubel_mart_refresh_token",
+        path="/",
+        secure=True,
+        samesite="none",
+        httponly=True,
+    )
+
+    return success_response(
+        message="Logout successful"
     )
