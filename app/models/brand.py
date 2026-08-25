@@ -8,7 +8,6 @@ from sqlalchemy.orm import (
 from sqlalchemy import (
     UUID,
     Boolean,
-    ForeignKey,
     Integer,
     String,
     DateTime,
@@ -16,24 +15,20 @@ from sqlalchemy import (
     func
 )
 
-class Subcategory(Base):
-    __tablename__ = "subcategories"
+
+class Brand(Base):
+    __tablename__ = "brands"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
 
-    category_id: Mapped[uuid.UUID] = mapped_column(
-        UUID,
-        ForeignKey("categories.id", ondelete="RESTRICT"),
-        nullable=False,
-        index=True,
-    )
-
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    slug: Mapped[str] = mapped_column(String(120), nullable=False)
+    slug: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
 
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    image: Mapped[str | None] = mapped_column(String, nullable=True)
+    logo: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    website: Mapped[str | None] = mapped_column(String, nullable=True)
 
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

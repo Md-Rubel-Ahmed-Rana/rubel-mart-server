@@ -7,7 +7,6 @@ from sqlalchemy.orm import (
 )
 from sqlalchemy import (
     Boolean,
-    Column,
     Integer,
     String,
     DateTime,
@@ -35,7 +34,7 @@ class Category(Base):
     image: Mapped[str | None] = mapped_column(String, nullable=True)
 
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    
+
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())

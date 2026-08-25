@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 
-class CreateCategorySchema(BaseModel):
+class CreateSubcategorySchema(BaseModel):
     name: str
+    category_id: str | None = None
     description: str | None = None
     image: str | None = None
     is_active: bool = True
