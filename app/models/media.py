@@ -8,7 +8,8 @@ from sqlalchemy.orm import (
 
 from sqlalchemy import (
     String,
-    DateTime
+    DateTime,
+    func
 )
 
 class Media(Base):
@@ -42,11 +43,11 @@ class Media(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.timezone.utc.now
+        default=func.now()
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.timezone.utc.now,
-        onupdate=datetime.timezone.utc.now
+        default=func.now(),
+        onupdate=func.now()
     )
