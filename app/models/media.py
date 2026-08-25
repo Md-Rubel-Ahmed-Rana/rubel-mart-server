@@ -1,13 +1,13 @@
 from app.core.database import Base
 from datetime import datetime
 import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import (
     Mapped,
     mapped_column
 )
 
 from sqlalchemy import (
-    String,
     DateTime,
     func
 )
@@ -16,12 +16,11 @@ class Media(Base):
 
     __tablename__ = "media"
 
-    id: Mapped[str] = mapped_column(
-    String(32),
-    primary_key=True,
-    default=lambda: uuid.uuid4().hex,
-    index=True
-    )
+    id: Mapped[uuid.UUID] = mapped_column(
+            UUID(as_uuid=True),
+            primary_key=True,
+            default=uuid.uuid4,
+        )
 
     public_id: Mapped[str]
 

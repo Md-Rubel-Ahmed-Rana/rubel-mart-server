@@ -1,12 +1,12 @@
 from app.core.database import Base
 from datetime import datetime
 import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import (
     Mapped,
     mapped_column
 )
 from sqlalchemy import (
-    UUID,
     Boolean,
     Integer,
     String,
@@ -19,7 +19,11 @@ from sqlalchemy import (
 class Brand(Base):
     __tablename__ = "brands"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+           UUID(as_uuid=True),
+           primary_key=True,
+           default=uuid.uuid4,
+       )
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     slug: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)

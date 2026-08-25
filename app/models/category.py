@@ -1,9 +1,10 @@
+import uuid 
 from app.core.database import Base
 from datetime import datetime
-import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import (
     Mapped,
-    mapped_column
+    mapped_column,
 )
 from sqlalchemy import (
     Boolean,
@@ -11,19 +12,18 @@ from sqlalchemy import (
     String,
     DateTime,
     Text,
-    func
+    func,
 )
 
 
 class Category(Base):
     __tablename__ = "categories"
 
-    id: Mapped[str] = mapped_column(
-        String(32),
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
         primary_key=True,
-        default=lambda: uuid.uuid4().hex,
-        index=True
-        )
+        default=uuid.uuid4,
+    )
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
 

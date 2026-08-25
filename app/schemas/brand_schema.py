@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class CreateBrandSchema(BaseModel):
     name: str
+    slug: str | None = None
     description: str | None = None
     logo: str | None = None
     website: str | None = None

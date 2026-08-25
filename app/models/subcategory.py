@@ -1,12 +1,12 @@
 from app.core.database import Base
 from datetime import datetime
-import uuid
+import uuid 
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import (
     Mapped,
     mapped_column
 )
 from sqlalchemy import (
-    UUID,
     Boolean,
     ForeignKey,
     Integer,
@@ -19,13 +19,16 @@ from sqlalchemy import (
 class Subcategory(Base):
     __tablename__ = "subcategories"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+    )
 
     category_id: Mapped[uuid.UUID] = mapped_column(
-        UUID,
+        UUID(as_uuid=True),
         ForeignKey("categories.id", ondelete="RESTRICT"),
         nullable=False,
-        index=True,
     )
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
