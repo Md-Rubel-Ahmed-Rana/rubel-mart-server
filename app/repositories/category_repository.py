@@ -36,3 +36,55 @@ class CategoryRepository:
         db.refresh(category)
 
         return category
+
+    @staticmethod
+    def find_by_id(
+            db: Session,
+            category_id: str
+        ):
+    
+            category =  (
+                db.query(Category)
+                .filter(Category.id == category_id)  
+                .first()
+            )
+            return category
+
+    @staticmethod
+    def find_all(
+            db: Session
+        ):
+    
+            categories =  (
+                db.query(Category)
+                .all()
+            )
+            return categories
+
+    @staticmethod
+    def update(
+            db: Session,
+            category: Category,
+            payload: dict
+        ):
+
+            for key, value in payload.items():
+                setattr(category, key, value)
+
+            db.commit()
+
+            db.refresh(category)
+
+            return category
+
+    @staticmethod
+    def delete(
+            db: Session,
+            category: Category
+        ):
+
+            db.delete(category)
+
+            db.commit()
+
+            return True

@@ -28,3 +28,47 @@ class CategoryService:
         print("Payload: ", payload.model_dump())
 
         return CategoryRepository.create(db, payload.model_dump())
+
+
+    @staticmethod
+    async def get_category_by_id(db: Session, category_id: str):
+        category = CategoryRepository.find_by_id(db, category_id)
+
+        if not category:
+            raise ApiException(
+                message="Category not found.",
+                status_code=404
+            )
+
+        return category
+
+    @staticmethod
+    async def get_all_categories(db: Session):
+        categories = CategoryRepository.find_all(db)
+
+        if not categories:
+            raise ApiException(
+                message="No categories found.",
+                status_code=404
+            )
+
+        return categories
+
+    # get categories for public api only necessary fields
+    @staticmethod
+    async def get_all_categories_public(db: Session):
+        categories = CategoryRepository.find_all(db)
+
+        if not categories:
+            raise ApiException(
+                message="No categories found.",
+                status_code=404
+            )
+        dto_categories = []
+        for category in categories:
+            dto_categories.append({
+                "name": category.name,
+                "slug": category.slug,
+                "image_url": category.image.url if category.image and category.image.url else None
+            })
+        return dto_categories

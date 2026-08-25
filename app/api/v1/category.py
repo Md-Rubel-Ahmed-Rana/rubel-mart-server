@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.exceptions.api_exception import ApiException
 from app.schemas.category_schema import CreateCategorySchema
 from app.services.category_service import CategoryService
 
@@ -36,4 +37,23 @@ async def create_category(payload: CreateCategorySchema,
         raise HTTPException(
             status_code=400,
             detail=str(error)
+        )
+
+# get all categories by admin
+@router.get("/")
+async def get_all_categories(
+    db: Session = Depends(get_db)
+):
+    try:
+        categories = await CategoryService.get_all_categories(db)
+        return {
+            "message": "Categories retrieved successfully",
+            "success": True,
+            "status_code": 200,
+            "data": categories
+        }
+    except ApiException as error:
+        raise HTTPException(
+            status_code=error.status_code,
+            detail=error.message
         )
