@@ -42,11 +42,11 @@ class Media(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.timezone.utc.now
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        default=datetime.timezone.utc.now,
+        onupdate=datetime.timezone.utc.now
     )
