@@ -66,14 +66,10 @@ class User(Base):
         nullable=False
     )
 
-    image_id: Mapped[str | None] = mapped_column(
-            ForeignKey("media.id"),
-            nullable=True
-    )
-    
-    image = relationship(
-        "Media",
-        foreign_keys=[image_id]
+    image: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("media.id", ondelete="RESTRICT"),
+        nullable=False,
     )
 
     role: Mapped[UserRole] = mapped_column(
