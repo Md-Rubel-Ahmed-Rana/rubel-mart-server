@@ -86,7 +86,7 @@ async def get_category_by_id(
                 "id": str(category.id),
                 "name":  category.name,
                 "slug":  category.slug,
-                "image": category.image.url if category.image_id else None,
+               "image_url": category.image.url if category.image else None,
                 "description": category.description,
                 "is_active":  category.is_active,
                 "sort_order": category.sort_order,
@@ -114,6 +114,6 @@ async def update_category_image(
         message="Category image updated successfully",
         data={
             "id": str(category.id),
-            "image": category.image.url if category.image else None,
+            "image": category.image.url if category.image_id else None,
         },
     )

@@ -1,20 +1,21 @@
-import uuid 
-from app.core.database import Base
+
+import uuid
 from datetime import datetime
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-)
+
+from app.core.database import Base
 from sqlalchemy import (
     Boolean,
+    DateTime,
+    ForeignKey,
     Integer,
     String,
-    DateTime,
     Text,
     func,
-    ForeignKey
 )
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.models.media import Media
 
 
 class Category(Base):
@@ -32,18 +33,35 @@ class Category(Base):
 
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    image_id: Mapped[str | None] = mapped_column(
-        String(32),
+    image_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
         ForeignKey("media.id", ondelete="RESTRICT"),
         nullable=True,
     )
-    
 
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    image: Mapped["Media | None"] = relationship(
+        "Media",
+        foreign_keys=[image_id],
+    )
 
-    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=True,
+    )
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
+    sort_order: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=0,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        server_default=func.now(),
+    )
+
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
