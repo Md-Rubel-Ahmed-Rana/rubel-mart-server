@@ -6,6 +6,7 @@ from app.core.jwt import jwt_service
 from app.schemas.user_schema import  (
     UpdateUserSchema
 )
+import uuid
 from app.utils.password import (
     verify_password,
     hash_password
@@ -33,7 +34,7 @@ class AuthService:
                 "last_name": user.last_name,
                 "email": user.email,
                 "phone": user.phone,
-                "image": user.image.url if user.image else None,
+                "image": user.image.url if user.image_id else None,
                 "role": user.role,
                 "status": user.status,
                 "is_verified": user.is_verified,
@@ -113,6 +114,11 @@ class AuthService:
             "email": user.email,
             "role": user.role
         }
+
+        payload = payload.copy()
+
+        if isinstance(payload.get("id"), uuid.UUID):
+            payload["id"] = str(payload["id"])
 
         access_token = (
             jwt_service

@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, timezone
 import jwt
-from jwt import ExpiredSignatureError
 
 from app.core.config import settings
 

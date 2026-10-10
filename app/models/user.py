@@ -37,10 +37,10 @@ class User(Base):
     __tablename__ = "users"
     
     id: Mapped[uuid.UUID] = mapped_column(
-            UUID(as_uuid=True),
-            primary_key=True,
-            default=uuid.uuid4,
-        )
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+    )
 
     first_name: Mapped[str] = mapped_column(
         String(100)
@@ -66,10 +66,10 @@ class User(Base):
         nullable=False
     )
 
-    image: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
+    image_id: Mapped[str | None] = mapped_column(
+        String(32),
         ForeignKey("media.id", ondelete="RESTRICT"),
-        nullable=False,
+        nullable=True,
     )
 
     role: Mapped[UserRole] = mapped_column(

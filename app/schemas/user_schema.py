@@ -16,4 +16,4 @@ class UpdateUserSchema(BaseModel):
     email: EmailStr | None = None
     phone: str | None = None
     password: str | None = None
-    image: str | None = None
+    image_id: str | None = None
