@@ -55,7 +55,9 @@ class CategoryService:
                 status_code=404
             )
 
-        return categories
+        return {
+            "categories": categories
+        }
 
     @staticmethod
     async def update_category_image(
