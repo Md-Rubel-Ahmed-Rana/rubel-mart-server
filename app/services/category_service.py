@@ -100,15 +100,28 @@ class CategoryService:
         if not categories:
             raise ApiException(
                 message="No categories found.",
-                status_code=404
+                status_code=404,
             )
+
+        # Image first, then sort_order ascending
+        categories.sort(
+            key=lambda category: (
+                not bool(category.image and category.image.url),
+                category.sort_order,
+            )
+        )
+
         dto_categories = []
+
         for category in categories:
             dto_categories.append({
                 "name": category.name,
                 "slug": category.slug,
-                "image_url": category.image.url if category.image and category.image.url else None
+                "image_url": (
+                    category.image.url
+                    if category.image and category.image.url
+                    else None
+                ),
             })
-        return {
-            "categories": dto_categories
-        }
+
+        return {"categories": dto_categories}

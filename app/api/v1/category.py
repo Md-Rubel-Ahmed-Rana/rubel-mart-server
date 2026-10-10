@@ -114,6 +114,6 @@ async def update_category_image(
         message="Category image updated successfully",
         data={
             "id": str(category.id),
-            "image": category.image.url if category.image_id else None,
+            "image_url": category.image.url if category.image_id else None,
         },
     )
