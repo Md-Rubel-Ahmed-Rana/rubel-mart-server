@@ -3,7 +3,10 @@ from app.schemas.category_schema import CreateCategorySchema
 from app.repositories.category_repository import CategoryRepository
 from app.utils.slugify import Slugify
 from app.exceptions.api_exception import ApiException
-
+from app.services.media_service import (
+    MediaService
+)
+from uuid import UUID
 
 class CategoryService:
 
@@ -53,6 +56,39 @@ class CategoryService:
             )
 
         return categories
+
+    @staticmethod
+    async def update_category_image(
+        db: Session,
+        id: UUID,
+        user_id: str,
+        file,
+    ):
+        category = CategoryRepository.find_by_id(
+            db=db,
+            category_id=str(id),
+        )
+
+        if not category:
+            raise ApiException(
+                message="Category not found.",
+                status_code=404,
+            )
+
+        media = await MediaService.upload_file(
+            db=db,
+            file=file,
+            uploaded_by=user_id,
+            folder="categories",
+        )
+
+        category = CategoryRepository.update_image(
+            db=db,
+            category=category,
+            image_id=str(media.id),
+        )
+
+        return category
 
     # get categories for public api only necessary fields
     @staticmethod

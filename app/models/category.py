@@ -13,6 +13,7 @@ from sqlalchemy import (
     DateTime,
     Text,
     func,
+    ForeignKey
 )
 
 
@@ -31,7 +32,12 @@ class Category(Base):
 
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    image: Mapped[str | None] = mapped_column(String, nullable=True)
+    image_id: Mapped[str | None] = mapped_column(
+        String(32),
+        ForeignKey("media.id", ondelete="RESTRICT"),
+        nullable=True,
+    )
+    
 
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 

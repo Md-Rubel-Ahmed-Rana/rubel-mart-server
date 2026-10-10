@@ -18,8 +18,6 @@ class CategoryRepository:
                 .first()
             )
             return category
-
-
     
     @staticmethod
     def create(
@@ -88,3 +86,16 @@ class CategoryRepository:
             db.commit()
 
             return True
+
+    @staticmethod
+    def update_image(
+        db: Session,
+        category: Category,
+        image_id: str,
+    ):
+        category.image_id = image_id
+
+        db.commit()
+        db.refresh(category)
+
+        return category
