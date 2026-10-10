@@ -71,4 +71,6 @@ class BrandService:
                 "slug": brand.slug,
                 "logo_url": brand.logo.url if brand.logo and brand.logo.url else None
             })
-        return dto_brands
+        return {
+            "brands": dto_brands
+        }
