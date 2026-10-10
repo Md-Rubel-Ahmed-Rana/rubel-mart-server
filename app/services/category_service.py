@@ -71,4 +71,6 @@ class CategoryService:
                 "slug": category.slug,
                 "image_url": category.image.url if category.image and category.image.url else None
             })
-        return dto_categories
+        return {
+            "categories": dto_categories
+        }
