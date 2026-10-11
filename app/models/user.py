@@ -2,8 +2,6 @@ from datetime import datetime
 from enum import Enum
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-
-
 from sqlalchemy import (
     String,
     Boolean,
@@ -12,14 +10,13 @@ from sqlalchemy import (
     ForeignKey,
     func
 )
-
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
     relationship
 )
-
 from app.core.database import Base
+from app.models.media import Media
 
 
 class UserRole(str, Enum):
@@ -66,11 +63,17 @@ class User(Base):
         nullable=False
     )
 
-    image_id: Mapped[str | None] = mapped_column(
-        String(32),
+    image_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
         ForeignKey("media.id", ondelete="RESTRICT"),
         nullable=True,
     )
+
+    image: Mapped["Media | None"] = relationship(
+        "Media",
+        foreign_keys=[image_id],
+    )
+    
 
     role: Mapped[UserRole] = mapped_column(
         SQLEnum(UserRole),

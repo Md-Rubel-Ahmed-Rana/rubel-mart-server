@@ -17,8 +17,6 @@ class BrandRepository:
             )
             return brand
 
-
-    
     @staticmethod
     def create(
         db: Session,
@@ -86,3 +84,16 @@ class BrandRepository:
             db.commit()
 
             return True
+
+    @staticmethod
+    def update_logo(
+        db: Session,
+        brand: Brand,
+        logo_id: str,
+    ):
+        brand.logo_id = logo_id
+
+        db.commit()
+        db.refresh(brand)
+
+        return brand

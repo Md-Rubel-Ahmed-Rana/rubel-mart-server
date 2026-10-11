@@ -4,16 +4,20 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import (
     Mapped,
-    mapped_column
+    mapped_column,
+    relationship
 )
 from sqlalchemy import (
     Boolean,
+    ForeignKey,
     Integer,
     String,
     DateTime,
     Text,
     func
 )
+
+from app.models.media import Media
 
 
 class Brand(Base):
@@ -30,7 +34,16 @@ class Brand(Base):
 
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    logo: Mapped[str | None] = mapped_column(String, nullable=True)
+    logo_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("media.id", ondelete="RESTRICT"),
+        nullable=True,
+    )
+    
+    logo: Mapped["Media | None"] = relationship(
+        "Media",
+        foreign_keys=[logo_id],
+    )
 
     website: Mapped[str | None] = mapped_column(String, nullable=True)
 

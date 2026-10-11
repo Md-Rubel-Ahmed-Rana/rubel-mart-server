@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app.core.database import get_db
+from app.dependencies.auth import get_current_user
 from app.exceptions.api_exception import ApiException
 from app.schemas.brand_schema import CreateBrandSchema
 from app.schemas.brand_schema import UpdateBrandSchema
@@ -91,6 +92,28 @@ async def update_brand(
     return success_response(
         message="Brand updated successfully",
         data= brand,
+    )
+
+@router.patch("/{id}/logo")
+async def update_brand_logo(
+    id: UUID,
+    logo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    brand = await BrandService.update_brand_logo(
+        db=db,
+        id=id,
+        user_id=current_user["id"],
+        logo=logo,
+    )
+
+    return success_response(
+        message="Brand logo updated successfully",
+        data={
+            "id": str(brand.id),
+            "logo_url": brand.logo.url if brand.logo_id else None,
+        },
     )
 
 @router.delete("/{id}")

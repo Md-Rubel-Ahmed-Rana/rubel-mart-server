@@ -4,6 +4,10 @@ from app.schemas.brand_schema import CreateBrandSchema
 from app.schemas.brand_schema import UpdateBrandSchema
 from app.utils.slugify import Slugify
 from app.exceptions.api_exception import ApiException
+from app.services.media_service import (
+    MediaService
+)
+from uuid import UUID
 
 
 class BrandService:
@@ -38,7 +42,19 @@ class BrandService:
                 status_code=404
             )
 
-        return {"brand": brand}
+        return {"brand": {
+                "id": brand.id,
+                "name": brand.name,
+                "slug": brand.slug,
+                "description": brand.description,
+                "logo_url": brand.logo.url if brand.logo and brand.logo.url else None,
+                "is_active": brand.is_active,
+                "website": brand.website,
+                "sort_order": brand.sort_order,
+                "created_at": brand.created_at,
+                "updated_at": brand.updated_at
+            }
+        }
 
     @staticmethod
     async def update_brand(db: Session, brand_id: str, payload: UpdateBrandSchema):
@@ -70,6 +86,39 @@ class BrandService:
         )
 
         return updated_user
+
+    @staticmethod
+    async def update_brand_logo(
+            db: Session,
+            id: UUID,
+            user_id: str,
+            logo,
+        ):
+            brand = BrandRepository.find_by_id(
+                db=db,
+                brand_id=str(id),
+            )
+    
+            if not brand:
+                raise ApiException(
+                    message="Brand not found.",
+                    status_code=404,
+                )
+    
+            media = await MediaService.upload_file(
+                db=db,
+                file=logo,
+                uploaded_by=user_id,
+                folder="brand-logos",
+            )
+    
+            brand = BrandRepository.update_logo(
+                db=db,
+                brand=brand,
+                logo_id=str(media.id),
+            )
+    
+            return brand
     
     @staticmethod
     async def delete_brand(db: Session, brand_id: str):
@@ -82,9 +131,6 @@ class BrandService:
             )
 
         return  BrandRepository.delete(db,brand)
-      
-
-        
 
     @staticmethod
     async def get_all_brands(db: Session):
@@ -96,7 +142,23 @@ class BrandService:
                 status_code=404
             )
 
-        return brands
+        dto_brands = []
+        for brand in brands:
+            dto_brands.append({
+                "id": brand.id,
+                "name": brand.name,
+                "slug": brand.slug,
+                "description": brand.description,
+                "logo_url": brand.logo.url if brand.logo and brand.logo.url else None,
+                "is_active": brand.is_active,
+                "website": brand.website,
+                "sort_order": brand.sort_order,
+                "created_at": brand.created_at,
+                "updated_at": brand.updated_at
+            })
+        return {
+            "brands": dto_brands
+        }
 
     # get brands for public api only necessary fields
     @staticmethod
