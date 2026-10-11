@@ -142,6 +142,12 @@ class BrandService:
                 status_code=404
             )
 
+        brands.sort(
+            key=lambda brand: (
+                brand.sort_order,
+            )
+        )
+
         dto_brands = []
         for brand in brands:
             dto_brands.append({
@@ -170,6 +176,12 @@ class BrandService:
                 message="No brands found.",
                 status_code=404
             )
+        brands.sort(
+            key=lambda brand: (
+                brand.sort_order,
+            )
+        )
+        
         dto_brands = []
         for brand in brands:
             dto_brands.append({
