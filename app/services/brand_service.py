@@ -1,6 +1,7 @@
 from requests import Session
 from app.repositories.brand_repository import BrandRepository
 from app.schemas.brand_schema import CreateBrandSchema
+from app.schemas.brand_schema import UpdateBrandSchema
 from app.utils.slugify import Slugify
 from app.exceptions.api_exception import ApiException
 
@@ -25,10 +26,7 @@ class BrandService:
         # create slug from name
         payload.slug = Slugify.makeSlug(payload.name)
 
-        print("Payload: ", payload.model_dump())
-
         return BrandRepository.create(db, payload.model_dump())
-
 
     @staticmethod
     async def get_brand_by_id(db: Session, brand_id: str):
@@ -40,7 +38,53 @@ class BrandService:
                 status_code=404
             )
 
-        return brand
+        return {"brand": brand}
+
+    @staticmethod
+    async def update_brand(db: Session, brand_id: str, payload: UpdateBrandSchema):
+        brand = BrandRepository.find_by_id(db, brand_id)
+
+        if not brand:
+            raise ApiException(
+                message="Brand not found.",
+                status_code=404
+            )
+
+
+
+        
+
+        if payload.name:
+            payload.slug = Slugify.makeSlug(payload.name)
+
+        update_data = payload.model_dump(
+            exclude_unset=True
+        )
+
+        updated_user = (
+            BrandRepository.update(
+                db,
+                brand,
+                update_data
+            )
+        )
+
+        return updated_user
+    
+    @staticmethod
+    async def delete_brand(db: Session, brand_id: str):
+        brand = BrandRepository.find_by_id(db, brand_id)
+
+        if not brand:
+            raise ApiException(
+                message="Brand not found.",
+                status_code=404
+            )
+
+        return  BrandRepository.delete(db,brand)
+      
+
+        
 
     @staticmethod
     async def get_all_brands(db: Session):

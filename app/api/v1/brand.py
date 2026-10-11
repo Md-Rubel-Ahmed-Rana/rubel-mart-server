@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from uuid import UUID
 from app.core.database import get_db
 from app.exceptions.api_exception import ApiException
 from app.schemas.brand_schema import CreateBrandSchema
+from app.schemas.brand_schema import UpdateBrandSchema
 from app.services.brand_service import BrandService
+from app.utils.response import (
+    success_response
+)
 
 
 router = APIRouter()
@@ -57,3 +61,49 @@ async def get_all_brands(
             status_code=error.status_code,
             detail=error.message
         )
+    
+@router.get("/{id}")
+async def get_brand_by_id(
+    id: UUID,
+    db: Session = Depends(get_db),
+):
+    brand = await BrandService.get_brand_by_id(
+        db=db,
+        brand_id=id,
+    )
+    return success_response(
+        message="Brand retrieved successfully",
+        data= brand,
+    )
+
+@router.patch("/{id}")
+async def update_brand(
+    payload: UpdateBrandSchema,
+    id: UUID,
+    db: Session = Depends(get_db),
+):
+    brand = await BrandService.update_brand(
+        db=db,
+        brand_id=id,
+        payload=payload
+    )
+
+    return success_response(
+        message="Brand updated successfully",
+        data= brand,
+    )
+
+@router.delete("/{id}")
+async def delete_brand(
+    id: UUID,
+    db: Session = Depends(get_db),
+):
+    await BrandService.delete_brand(
+        db=db,
+        brand_id=id,
+    )
+
+    return success_response(
+        message="Brand deleted successfully",
+        data= {},
+    )
